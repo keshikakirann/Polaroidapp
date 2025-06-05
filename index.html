@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polaroid Photo Creator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            min-height: 600px;
+        }
+
+        .controls {
+            background: #f8f9fa;
+            padding: 30px;
+            border-right: 1px solid #e9ecef;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-input-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .file-input-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4ECDC4;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4ECDC4;
+            cursor: pointer;
+            border: none;
+        }
+
+        .slider-value {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .preview-area {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+        }
+
+        .preview-container {
+            max-width: 100%;
+            max-height: 500px;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .preview-placeholder {
+            text-align: center;
+            color: #aaa;
+            font-size: 18px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4ECDC4;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                border-right: none;
+                border-bottom: 1px solid #e9ecef;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📸 Polaroid Photo Creator</h1>
+            <p>Transform your photos into vintage polaroid memories</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="controls">
+                <div class="file-input-wrapper">
+                    <input type="file" id="imageInput" class="file-input" accept="image/*">
+                    <button class="file-input-button" onclick="document.getElementById('imageInput').click()">
+                        📁 Select Photo
+                    </button>
+                </div>
+
+                <div class="control-group">
+                    <label for="borderSize">Border Size: <span id="borderValue">50</span>px</label>
+                    <input type="range" id="borderSize" class="slider" min="20" max="100" value="50">
+                </div>
+
+                <div class="control-group">
+                    <label for="bottomMultiplier">Bottom Border: <span id="bottomValue">2.5</span>x</label>
+                    <input type="range" id="bottomMultiplier" class="slider" min="1.5" max="4" step="0.1" value="2.5">
+                </div>
+
+                <div class="control-group">
+                    <label for="vintageIntensity">Vintage Effect: <span id="vintageValue">30</span>%</label>
+                    <input type="range" id="vintageIntensity" class="slider" min="0" max="100" value="30">
+                </div>
+
+                <div class="control-group">
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="addShadow" class="checkbox" checked>
+                        <label for="addShadow">Add Drop Shadow</label>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="createPolaroid" class="btn btn-primary" disabled>
+                        ✨ Create Polaroid
+                    </button>
+                    <button id="downloadImage" class="btn btn-success" disabled>
+                        💾 Download Image
+                    </button>
+                </div>
+            </div>
+
+            <div class="preview-area">
+                <div class="preview-container" id="previewContainer">
+                    <div class="preview-placeholder">
+                        Select a photo to get started
+                    </div>
+                </div>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Creating your polaroid...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let originalImage = null;
+        let polaroidCanvas = null;
+
+        // DOM elements
+        const imageInput = document.getElementById('imageInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const createButton = document.getElementById('createPolaroid');
+        const downloadButton = document.getElementById('downloadImage');
+        const loading = document.getElementById('loading');
+
+        // Sliders
+        const borderSlider = document.getElementById('borderSize');
+        const bottomSlider = document.getElementById('bottomMultiplier');
+        const vintageSlider = document.getElementById('vintageIntensity');
+        const shadowCheckbox = document.getElementById('addShadow');
+
+        // Value displays
+        const borderValue = document.getElementById('borderValue');
+        const bottomValue = document.getElementById('bottomValue');
+        const vintageValue = document.getElementById('vintageValue');
+
+        // Update slider values
+        borderSlider.oninput = () => borderValue.textContent = borderSlider.value;
+        bottomSlider.oninput = () => bottomValue.textContent = parseFloat(bottomSlider.value).toFixed(1);
+        vintageSlider.oninput = () => vintageValue.textContent = vintageSlider.value;
+
+        // Handle image selection
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        originalImage = img;
+                        showPreview(img);
+                        createButton.disabled = false;
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Show image preview
+        function showPreview(img) {
+            previewContainer.innerHTML = '';
+            const previewImg = img.cloneNode();
+            previewImg.className = 'preview-image';
+            previewContainer.appendChild(previewImg);
+        }
+
+        // Create polaroid effect
+        createButton.addEventListener('click', function() {
+            if (!originalImage) return;
+
+            loading.style.display = 'block';
+            previewContainer.style.display = 'none';
+
+            setTimeout(() => {
+                createPolaroidEffect();
+                loading.style.display = 'none';
+                previewContainer.style.display = 'flex';
+            }, 100);
+        });
+
+        function createPolaroidEffect() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Get settings
+            const borderSize = parseInt(borderSlider.value);
+            const bottomMultiplier = parseFloat(bottomSlider.value);
+            const vintageIntensity = parseInt(vintageSlider.value) / 100;
+            const addShadow = shadowCheckbox.checked;
+
+            // Calculate dimensions
+            const maxSize = 800;
+            let imgWidth = originalImage.width;
+            let imgHeight = originalImage.height;
+
+            // Resize if too large
+            if (imgWidth > maxSize || imgHeight > maxSize) {
+                const ratio = Math.min(maxSize / imgWidth, maxSize / imgHeight);
+                imgWidth *= ratio;
+                imgHeight *= ratio;
+            }
+
+            const bottomBorder = borderSize * bottomMultiplier;
+            const shadowOffset = addShadow ? 15 : 0;
+
+            // Set canvas size
+            canvas.width = imgWidth + (borderSize * 2) + shadowOffset;
+            canvas.height = imgHeight + borderSize + bottomBorder + shadowOffset;
+
+            // Draw shadow
+            if (addShadow) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+                ctx.fillRect(shadowOffset, shadowOffset, 
+                           imgWidth + (borderSize * 2), 
+                           imgHeight + borderSize + bottomBorder);
+                
+                // Blur effect simulation
+                ctx.filter = 'blur(8px)';
+                ctx.fillRect(shadowOffset, shadowOffset, 
+                           imgWidth + (borderSize * 2), 
+                           imgHeight + borderSize + bottomBorder);
+                ctx.filter = 'none';
+            }
+
+            // Draw white border
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, imgWidth + (borderSize * 2), imgHeight + borderSize + bottomBorder);
+
+            // Draw image
+            ctx.drawImage(originalImage, borderSize, borderSize, imgWidth, imgHeight);
+
+            // Apply vintage effect
+            if (vintageIntensity > 0) {
+                applyVintageEffect(ctx, borderSize, borderSize, imgWidth, imgHeight, vintageIntensity);
+            }
+
+            // Show result
+            polaroidCanvas = canvas;
+            previewContainer.innerHTML = '';
+            previewContainer.appendChild(canvas);
+            canvas.className = 'preview-image';
+            
+            downloadButton.disabled = false;
+        }
+
+        function applyVintageEffect(ctx, x, y, width, height, intensity) {
+            // Get image data
+            const imageData = ctx.getImageData(x, y, width, height);
+            const data = imageData.data;
+
+            for (let i = 0; i < data.length; i += 4) {
+                // Reduce saturation
+                const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                data[i] = data[i] + (avg - data[i]) * intensity * 0.3;     // Red
+                data[i + 1] = data[i + 1] + (avg - data[i + 1]) * intensity * 0.3; // Green
+                data[i + 2] = data[i + 2] + (avg - data[i + 2]) * intensity * 0.3; // Blue
+
+                // Add yellow tint
+                if (intensity > 0.2) {
+                    data[i] = Math.min(255, data[i] + intensity * 10);     // More red
+                    data[i + 1] = Math.min(255, data[i + 1] + intensity * 8); // More green
+                    data[i + 2] = Math.max(0, data[i + 2] - intensity * 5);   // Less blue
+                }
+
+                // Reduce contrast slightly
+                const factor = 1 - intensity * 0.2;
+                data[i] = ((data[i] - 128) * factor) + 128;
+                data[i + 1] = ((data[i + 1] - 128) * factor) + 128;
+                data[i + 2] = ((data[i + 2] - 128) * factor) + 128;
+            }
+
+            ctx.putImageData(imageData, x, y);
+        }
+
+        // Download functionality
+        downloadButton.addEventListener('click', function() {
+            if (!polaroidCanvas) return;
+
+            const link = document.createElement('a');
+            link.download = 'polaroid-photo.png';
+            link.href = polaroidCanvas.toDataURL();
+            link.click();
+        });
+    </script>
+</body>
+</html>
