@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Polaroid Photo Creator</title>
+    <title>Vintage Polaroid Creator</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Courier+Prime:wght@400;700&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -12,65 +14,125 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Courier Prime', monospace;
+            background: #f4f1e8;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(205, 133, 63, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, #f4f1e8 0%, #e8dcc0 100%);
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><g fill-opacity="0.03"><circle cx="50" cy="50" r="1"/><circle cx="20" cy="20" r="0.5"/><circle cx="80" cy="30" r="0.8"/><circle cx="30" cy="80" r="0.6"/><circle cx="70" cy="70" r="0.4"/></g></svg>');
+            pointer-events: none;
+            z-index: -1;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            background: #faf8f1;
+            border-radius: 15px;
+            box-shadow: 
+                0 8px 32px rgba(139, 69, 19, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
             overflow: hidden;
+            border: 3px solid #d2b48c;
+            position: relative;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                rgba(205, 133, 63, 0.05) 0%, 
+                transparent 25%, 
+                transparent 75%, 
+                rgba(139, 69, 19, 0.05) 100%);
+            pointer-events: none;
         }
 
         .header {
-            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-            color: white;
-            padding: 30px;
+            background: linear-gradient(135deg, #8b4513 0%, #a0522d 50%, #cd853f 100%);
+            color: #faf8f1;
+            padding: 40px 30px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 1px,
+                rgba(255, 255, 255, 0.1) 1px,
+                rgba(255, 255, 255, 0.1) 2px
+            );
+            animation: vintage-lines 20s linear infinite;
+        }
+
+        @keyframes vintage-lines {
+            0% { transform: translateX(-100px) translateY(-100px); }
+            100% { transform: translateX(100px) translateY(100px); }
         }
 
         .header h1 {
-            font-size: 2.5em;
+            font-family: 'Caveat', cursive;
+            font-size: 3.2em;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            transform: rotate(-1deg);
         }
 
         .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
+            font-size: 1.1em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            font-style: italic;
+            letter-spacing: 1px;
         }
 
         .main-content {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 30px;
+            gap: 30px;
         }
 
-        .controls {
-            background: #f8f9fa;
-            padding: 30px;
-            border-right: 1px solid #e9ecef;
-        }
-
-        .control-group {
-            margin-bottom: 25px;
-        }
-
-        .control-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #495057;
+        .upload-section {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
         }
 
         .file-input-wrapper {
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .file-input {
@@ -80,27 +142,79 @@
         .file-input-button {
             display: block;
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-            color: white;
+            padding: 20px;
+            background: linear-gradient(135deg, #8b4513 0%, #a0522d 50%, #cd853f 100%);
+            color: #faf8f1;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: 18px;
+            font-weight: 700;
+            font-family: 'Caveat', cursive;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 4px 15px rgba(139, 69, 19, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: rotate(-0.5deg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-input-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .file-input-button:hover::before {
+            left: 100%;
         }
 
         .file-input-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: rotate(0deg) translateY(-3px);
+            box-shadow: 
+                0 8px 25px rgba(139, 69, 19, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .controls-section {
+            width: 100%;
+            max-width: 400px;
+            margin: 20px 0;
+            padding: 25px;
+            background: #f8f5ee;
+            border-radius: 12px;
+            border: 2px solid #e8dcc0;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-family: 'Caveat', cursive;
+            font-size: 16px;
+            font-weight: 600;
+            color: #8b4513;
+        }
+
+        .slider-container {
+            position: relative;
+            margin-bottom: 10px;
         }
 
         .slider {
             width: 100%;
-            height: 6px;
-            border-radius: 3px;
-            background: #ddd;
+            height: 8px;
+            border-radius: 5px;
+            background: #e8dcc0;
             outline: none;
             -webkit-appearance: none;
         }
@@ -111,94 +225,109 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: #4ECDC4;
+            background: #8b4513;
             cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .slider::-moz-range-thumb {
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: #4ECDC4;
+            background: #8b4513;
             cursor: pointer;
             border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .slider-value {
+            text-align: center;
             font-size: 14px;
-            color: #6c757d;
+            color: #8b7355;
             margin-top: 5px;
         }
 
-        .checkbox-wrapper {
+        .checkbox-container {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
         .checkbox {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
+            accent-color: #8b4513;
         }
 
         .action-buttons {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 30px;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .btn {
-            padding: 12px 20px;
+            padding: 15px 25px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 16px;
-            font-weight: 600;
-            transition: all 0.2s;
+            font-weight: 700;
+            font-family: 'Caveat', cursive;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            transform: rotate(-0.3deg);
         }
 
         .btn-primary {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
+            background: linear-gradient(135deg, #654321 0%, #8b4513 100%);
+            color: #faf8f1;
+            box-shadow: 0 4px 15px rgba(101, 67, 33, 0.3);
         }
 
         .btn-success {
-            background: linear-gradient(45deg, #56ab2f, #a8e6cf);
-            color: white;
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);
+            color: #faf8f1;
+            box-shadow: 0 4px 15px rgba(45, 80, 22, 0.3);
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: rotate(0deg) translateY(-2px);
         }
 
         .btn:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
+            transform: rotate(-0.3deg);
         }
 
         .preview-area {
-            padding: 30px;
+            width: 100%;
+            max-width: 600px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            background: #fff;
         }
 
         .preview-container {
-            max-width: 100%;
-            max-height: 500px;
-            border: 2px dashed #ddd;
-            border-radius: 10px;
+            width: 100%;
+            min-height: 400px;
+            border: 3px dashed #d2b48c;
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 300px;
             position: relative;
             overflow: hidden;
+            background: #fefcf7;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(210, 180, 140, 0.1) 10px,
+                rgba(210, 180, 140, 0.1) 20px
+            );
         }
 
         .preview-image {
@@ -206,29 +335,35 @@
             max-height: 100%;
             object-fit: contain;
             border-radius: 8px;
+            filter: sepia(0.1) contrast(1.1) brightness(1.05);
         }
 
         .preview-placeholder {
             text-align: center;
-            color: #aaa;
+            color: #8b7355;
             font-size: 18px;
+            font-family: 'Caveat', cursive;
+            font-weight: 600;
+            transform: rotate(-1deg);
         }
 
         .loading {
             display: none;
             text-align: center;
-            padding: 20px;
-            color: #666;
+            padding: 30px;
+            color: #8b4513;
+            font-family: 'Caveat', cursive;
+            font-size: 18px;
         }
 
         .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #4ECDC4;
+            border: 4px solid #f4f1e8;
+            border-top: 4px solid #8b4513;
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
+            margin: 0 auto 15px;
         }
 
         @keyframes spin {
@@ -236,14 +371,50 @@
             100% { transform: rotate(360deg); }
         }
 
+        .polaroid-frame {
+            position: relative;
+            display: inline-block;
+            background: #ffffff;
+            padding: 20px 20px 60px 20px;
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.2),
+                0 8px 16px rgba(0, 0, 0, 0.1);
+            transform: rotate(-2deg);
+            border-radius: 3px;
+        }
+
+        .polaroid-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(245, 245, 245, 0.8) 0%,
+                rgba(250, 248, 245, 0.9) 30%,
+                rgba(255, 255, 255, 1) 70%,
+                rgba(248, 246, 242, 0.9) 100%);
+            border-radius: 3px;
+            z-index: -1;
+        }
+
         @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
+            .header h1 {
+                font-size: 2.5em;
             }
             
-            .controls {
-                border-right: none;
-                border-bottom: 1px solid #e9ecef;
+            .main-content {
+                padding: 30px 20px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 200px;
             }
         }
     </style>
@@ -251,47 +422,42 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📸 Polaroid Photo Creator</h1>
-            <p>Transform your photos into vintage polaroid memories</p>
+            <h1>📷 Vintage Polaroid Memories</h1>
+            <p>Capture the magic of yesteryear</p>
         </div>
         
         <div class="main-content">
-            <div class="controls">
+            <div class="upload-section">
                 <div class="file-input-wrapper">
                     <input type="file" id="imageInput" class="file-input" accept="image/*">
                     <button class="file-input-button" onclick="document.getElementById('imageInput').click()">
-                        📁 Select Photo
+                        📁 Choose Your Photo
                     </button>
                 </div>
 
-                <div class="control-group">
-                    <label for="borderSize">Border Size: <span id="borderValue">50</span>px</label>
-                    <input type="range" id="borderSize" class="slider" min="20" max="100" value="50">
-                </div>
-
-                <div class="control-group">
-                    <label for="bottomMultiplier">Bottom Border: <span id="bottomValue">2.5</span>x</label>
-                    <input type="range" id="bottomMultiplier" class="slider" min="1.5" max="4" step="0.1" value="2.5">
-                </div>
-
-                <div class="control-group">
-                    <label for="vintageIntensity">Vintage Effect: <span id="vintageValue">30</span>%</label>
-                    <input type="range" id="vintageIntensity" class="slider" min="0" max="100" value="30">
-                </div>
-
-                <div class="control-group">
-                    <div class="checkbox-wrapper">
-                        <input type="checkbox" id="addShadow" class="checkbox" checked>
-                        <label for="addShadow">Add Drop Shadow</label>
+                <div class="controls-section" id="controlsSection" style="display: none;">
+                    <div class="control-group">
+                        <label for="intensitySlider">Filter Intensity</label>
+                        <div class="slider-container">
+                            <input type="range" id="intensitySlider" class="slider" min="0" max="100" value="50">
+                            <div class="slider-value" id="intensityValue">50%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="blackWhiteCheckbox" class="checkbox">
+                            <label for="blackWhiteCheckbox">Black & White</label>
+                        </div>
                     </div>
                 </div>
 
                 <div class="action-buttons">
                     <button id="createPolaroid" class="btn btn-primary" disabled>
-                        ✨ Create Polaroid
+                        ✨ Create Polaroid Magic
                     </button>
                     <button id="downloadImage" class="btn btn-success" disabled>
-                        💾 Download Image
+                        💾 Save Memory
                     </button>
                 </div>
             </div>
@@ -299,13 +465,13 @@
             <div class="preview-area">
                 <div class="preview-container" id="previewContainer">
                     <div class="preview-placeholder">
-                        Select a photo to get started
+                        Select a cherished photo to begin...
                     </div>
                 </div>
                 
                 <div class="loading" id="loading">
                     <div class="spinner"></div>
-                    <p>Creating your polaroid...</p>
+                    <p>Developing your vintage memory...</p>
                 </div>
             </div>
         </div>
@@ -321,22 +487,15 @@
         const createButton = document.getElementById('createPolaroid');
         const downloadButton = document.getElementById('downloadImage');
         const loading = document.getElementById('loading');
+        const controlsSection = document.getElementById('controlsSection');
+        const intensitySlider = document.getElementById('intensitySlider');
+        const intensityValue = document.getElementById('intensityValue');
+        const blackWhiteCheckbox = document.getElementById('blackWhiteCheckbox');
 
-        // Sliders
-        const borderSlider = document.getElementById('borderSize');
-        const bottomSlider = document.getElementById('bottomMultiplier');
-        const vintageSlider = document.getElementById('vintageIntensity');
-        const shadowCheckbox = document.getElementById('addShadow');
-
-        // Value displays
-        const borderValue = document.getElementById('borderValue');
-        const bottomValue = document.getElementById('bottomValue');
-        const vintageValue = document.getElementById('vintageValue');
-
-        // Update slider values
-        borderSlider.oninput = () => borderValue.textContent = borderSlider.value;
-        bottomSlider.oninput = () => bottomValue.textContent = parseFloat(bottomSlider.value).toFixed(1);
-        vintageSlider.oninput = () => vintageValue.textContent = vintageSlider.value;
+        // Update intensity display
+        intensitySlider.addEventListener('input', function() {
+            intensityValue.textContent = this.value + '%';
+        });
 
         // Handle image selection
         imageInput.addEventListener('change', function(e) {
@@ -349,6 +508,7 @@
                         originalImage = img;
                         showPreview(img);
                         createButton.disabled = false;
+                        controlsSection.style.display = 'block';
                     };
                     img.src = e.target.result;
                 };
@@ -375,21 +535,21 @@
                 createPolaroidEffect();
                 loading.style.display = 'none';
                 previewContainer.style.display = 'flex';
-            }, 100);
+            }, 1000);
         });
 
         function createPolaroidEffect() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
 
-            // Get settings
-            const borderSize = parseInt(borderSlider.value);
-            const bottomMultiplier = parseFloat(bottomSlider.value);
-            const vintageIntensity = parseInt(vintageSlider.value) / 100;
-            const addShadow = shadowCheckbox.checked;
+            // Realistic polaroid settings
+            const borderSize = 30;
+            const bottomBorder = 80;
+            const intensity = intensitySlider.value / 100;
+            const isBlackWhite = blackWhiteCheckbox.checked;
 
             // Calculate dimensions
-            const maxSize = 800;
+            const maxSize = 600;
             let imgWidth = originalImage.width;
             let imgHeight = originalImage.height;
 
@@ -400,76 +560,150 @@
                 imgHeight *= ratio;
             }
 
-            const bottomBorder = borderSize * bottomMultiplier;
-            const shadowOffset = addShadow ? 15 : 0;
+            // Set canvas size (no shadow)
+            canvas.width = imgWidth + (borderSize * 2);
+            canvas.height = imgHeight + borderSize + bottomBorder;
 
-            // Set canvas size
-            canvas.width = imgWidth + (borderSize * 2) + shadowOffset;
-            canvas.height = imgHeight + borderSize + bottomBorder + shadowOffset;
+            // Draw realistic polaroid border
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw shadow
-            if (addShadow) {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-                ctx.fillRect(shadowOffset, shadowOffset, 
-                           imgWidth + (borderSize * 2), 
-                           imgHeight + borderSize + bottomBorder);
-                
-                // Blur effect simulation
-                ctx.filter = 'blur(8px)';
-                ctx.fillRect(shadowOffset, shadowOffset, 
-                           imgWidth + (borderSize * 2), 
-                           imgHeight + borderSize + bottomBorder);
-                ctx.filter = 'none';
-            }
-
-            // Draw white border
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, imgWidth + (borderSize * 2), imgHeight + borderSize + bottomBorder);
+            // Add subtle border texture
+            ctx.globalAlpha = 0.03;
+            ctx.fillStyle = '#f5f5f5';
+            ctx.fillRect(0, 0, canvas.width, 8);
+            ctx.fillRect(0, canvas.height - 8, canvas.width, 8);
+            ctx.fillRect(0, 0, 8, canvas.height);
+            ctx.fillRect(canvas.width - 8, 0, 8, canvas.height);
+            ctx.globalAlpha = 1;
 
             // Draw image
             ctx.drawImage(originalImage, borderSize, borderSize, imgWidth, imgHeight);
 
             // Apply vintage effect
-            if (vintageIntensity > 0) {
-                applyVintageEffect(ctx, borderSize, borderSize, imgWidth, imgHeight, vintageIntensity);
+            if (isBlackWhite) {
+                applyBlackWhiteEffect(ctx, borderSize, borderSize, imgWidth, imgHeight, intensity);
+            } else {
+                applyBeigeVintageEffect(ctx, borderSize, borderSize, imgWidth, imgHeight, intensity);
             }
 
-            // Show result
+            // Show result with realistic polaroid frame styling
             polaroidCanvas = canvas;
             previewContainer.innerHTML = '';
-            previewContainer.appendChild(canvas);
-            canvas.className = 'preview-image';
+            const frameDiv = document.createElement('div');
+            frameDiv.className = 'polaroid-frame';
+            frameDiv.appendChild(canvas);
+            previewContainer.appendChild(frameDiv);
+            canvas.style.display = 'block';
+            canvas.style.maxWidth = '100%';
+            canvas.style.height = 'auto';
             
             downloadButton.disabled = false;
         }
 
-        function applyVintageEffect(ctx, x, y, width, height, intensity) {
-            // Get image data
+        function applyBeigeVintageEffect(ctx, x, y, width, height, intensity) {
             const imageData = ctx.getImageData(x, y, width, height);
             const data = imageData.data;
 
             for (let i = 0; i < data.length; i += 4) {
-                // Reduce saturation
-                const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                data[i] = data[i] + (avg - data[i]) * intensity * 0.3;     // Red
-                data[i + 1] = data[i + 1] + (avg - data[i + 1]) * intensity * 0.3; // Green
-                data[i + 2] = data[i + 2] + (avg - data[i + 2]) * intensity * 0.3; // Blue
+                let r = data[i];
+                let g = data[i + 1];
+                let b = data[i + 2];
 
-                // Add yellow tint
-                if (intensity > 0.2) {
-                    data[i] = Math.min(255, data[i] + intensity * 10);     // More red
-                    data[i + 1] = Math.min(255, data[i + 1] + intensity * 8); // More green
-                    data[i + 2] = Math.max(0, data[i + 2] - intensity * 5);   // Less blue
-                }
+                // Strong beige/sepia transformation
+                const tr = 0.393 * r + 0.769 * g + 0.189 * b;
+                const tg = 0.349 * r + 0.686 * g + 0.168 * b;
+                const tb = 0.272 * r + 0.534 * g + 0.131 * b;
 
-                // Reduce contrast slightly
-                const factor = 1 - intensity * 0.2;
-                data[i] = ((data[i] - 128) * factor) + 128;
-                data[i + 1] = ((data[i + 1] - 128) * factor) + 128;
-                data[i + 2] = ((data[i + 2] - 128) * factor) + 128;
+                // Enhanced beige tones
+                r = Math.min(255, tr * 1.1 + 15);
+                g = Math.min(255, tg * 1.05 + 10);
+                b = Math.min(255, tb * 0.85 + 5);
+
+                // Apply intensity
+                const originalR = data[i];
+                const originalG = data[i + 1];
+                const originalB = data[i + 2];
+
+                r = originalR + (r - originalR) * intensity;
+                g = originalG + (g - originalG) * intensity;
+                b = originalB + (b - originalB) * intensity;
+
+                // Subtle film grain
+                const grain = (Math.random() - 0.5) * 4 * intensity;
+                r = Math.max(0, Math.min(255, r + grain));
+                g = Math.max(0, Math.min(255, g + grain));
+                b = Math.max(0, Math.min(255, b + grain));
+
+                data[i] = r;
+                data[i + 1] = g;
+                data[i + 2] = b;
             }
 
             ctx.putImageData(imageData, x, y);
+
+            // Subtle vignette
+            const gradient = ctx.createRadialGradient(
+                x + width/2, y + height/2, 0,
+                x + width/2, y + height/2, Math.max(width, height) * 0.7
+            );
+            gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+            gradient.addColorStop(1, `rgba(101, 67, 33, ${0.1 * intensity})`);
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(x, y, width, height);
+        }
+
+        function applyBlackWhiteEffect(ctx, x, y, width, height, intensity) {
+            const imageData = ctx.getImageData(x, y, width, height);
+            const data = imageData.data;
+
+            for (let i = 0; i < data.length; i += 4) {
+                let r = data[i];
+                let g = data[i + 1];
+                let b = data[i + 2];
+
+                // Convert to grayscale
+                const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+
+                // Apply intensity
+                const originalR = data[i];
+                const originalG = data[i + 1];
+                const originalB = data[i + 2];
+
+                r = originalR + (gray - originalR) * intensity;
+                g = originalG + (gray - originalG) * intensity;
+                b = originalB + (gray - originalB) * intensity;
+
+                // Add contrast and slight warm tone
+                const contrast = 1.1;
+                r = Math.min(255, ((r - 128) * contrast) + 128 + 5);
+                g = Math.min(255, ((g - 128) * contrast) + 128 + 3);
+                b = Math.min(255, ((b - 128) * contrast) + 128);
+
+                // Film grain
+                const grain = (Math.random() - 0.5) * 6 * intensity;
+                r = Math.max(0, Math.min(255, r + grain));
+                g = Math.max(0, Math.min(255, g + grain));
+                b = Math.max(0, Math.min(255, b + grain));
+
+                data[i] = r;
+                data[i + 1] = g;
+                data[i + 2] = b;
+            }
+
+            ctx.putImageData(imageData, x, y);
+
+            // Subtle vignette for B&W
+            const gradient = ctx.createRadialGradient(
+                x + width/2, y + height/2, 0,
+                x + width/2, y + height/2, Math.max(width, height) * 0.7
+            );
+            gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+            gradient.addColorStop(1, `rgba(0, 0, 0, ${0.15 * intensity})`);
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(x, y, width, height);
         }
 
         // Download functionality
@@ -477,7 +711,7 @@
             if (!polaroidCanvas) return;
 
             const link = document.createElement('a');
-            link.download = 'polaroid-photo.png';
+            link.download = 'vintage-polaroid-memory.png';
             link.href = polaroidCanvas.toDataURL();
             link.click();
         });
